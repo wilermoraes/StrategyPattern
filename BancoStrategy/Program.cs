@@ -12,39 +12,33 @@ namespace BancoStrategy
             //Simulação da informação de uma ViewModel
             BancoVM bancoVM = new BancoVM(100, "SANTANDER");
 
-            StrategyComEnum(bancoVM);
-            StrategyComDictionary(bancoVM);
+            if (!Enum.TryParse(bancoVM.Banco, true, out EnumBanco elemento))
+            {
+                Console.WriteLine("Banco não identificado");
+                return;
+            }
+
+            StrategyComEnum(bancoVM, elemento);
+            StrategyComDictionary(bancoVM, elemento);
 
             Console.ReadKey();
         }
 
-        private static void StrategyComEnum(BancoVM bancoVM)
+        private static void StrategyComEnum(BancoVM bancoVM, EnumBanco elemento)
         {
             Console.WriteLine("=== Strategy com Enum e Extension Method ===");
 
-            if (!Enum.TryParse(bancoVM.Banco, true, out EnumBanco elementoEnum))
-            {
-                Console.WriteLine("Banco não identificado");
-                return;
-            }
-
-            Banco banco = elementoEnum.ObterBanco();
+            Banco banco = elemento.ObterBanco();
             banco.ObterNomeBanco();
         }
 
 
-        private static void StrategyComDictionary(BancoVM bancoVM)
+        private static void StrategyComDictionary(BancoVM bancoVM, EnumBanco elemento)
         {
             Console.WriteLine("\n=== Strategy com Enum e Dictionary ===");
 
-            if (!Enum.TryParse(bancoVM.Banco, true, out EnumBanco elementoEnum))
-            {
-                Console.WriteLine("Banco não identificado");
-                return;
-            }
-
             var dicionario = Dicionario.ObterDados()
-                .Where(x => x.Key == elementoEnum)
+                .Where(x => x.Key == elemento)
                 .Select(x => x.Value)
                 .FirstOrDefault();
 
@@ -54,7 +48,7 @@ namespace BancoStrategy
                 return;
             }
 
-            dicionario.ObterNomeBanco();
+            dicionario.Invoke().ObterNomeBanco();
         }
     }
 }
